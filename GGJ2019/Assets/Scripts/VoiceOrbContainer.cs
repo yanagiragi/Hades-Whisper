@@ -11,8 +11,6 @@ public class VoiceOrbContainer : MonoBehaviour
 
     public GameObject[] Orbs;
 
-    public Transform fixedJointTarget;
-
     void Start()
     {
         playerOrbs = new GameObject[playerOrbMaxAmount];
@@ -26,11 +24,7 @@ public class VoiceOrbContainer : MonoBehaviour
         }
         else
         {
-            theOrb.transform.position = fixedJointTarget.position;
-
             playerOrbs[index] = theOrb;
-
-            theOrb.GetComponent<FollowPosition>().target = fixedJointTarget.transform;
 
             /*FixedJoint fj = Orbs[index].AddComponent<FixedJoint>();
             fj.connectedBody = fixedJointTarget;
