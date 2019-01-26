@@ -18,7 +18,7 @@ public class DemoSpiderController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        Debug.Log(animationType.ToString());
+        // Debug.Log(animationType.ToString());
         animator.Play(animationType.ToString());
     }
 

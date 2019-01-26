@@ -5,21 +5,15 @@ using UnityEngine;
 public class MonsterStageEnemy : MonoBehaviour
 {
     // Patrol Path
-    public GameObject[] targets;
+    public Transform[] targets;
 
     // VoiceOrb
-    public GameObject theOrb;
-    public GameObject theUser;
-    public float PatrolRange;
-    public float startTime;
+    public Transform theOrb;
 
-    // status
-    // 1: chase
-    // 2: idle
-    public int status;
-    public int i;
-    public int targets_num;
-    public bool passive;
+    public Transform theUser;
+
+    public float PatrolRange;
+    private float sqrPatrolRange;
 
    public enum EnemyState
    {
@@ -36,49 +30,60 @@ public class MonsterStageEnemy : MonoBehaviour
     [Range(0,1)]
     public float idleProb = 0.5f;
 
-    public float updateStatePeriod;
+    public float updateStatePeriod;    
+    public float chasingOrbSpeed = 1.0f;
+    public float chasingPlayerSpeed = 1.0f;
+    public float patrolSpeed = 1.0f;
+    public float patrolSwitchTargetRange = 5.0f;
+    private float sqrPatrolSwitchTargetRange = 5.0f;
+
+    public float rotateSpeedFactor = 1.0f;
+
+    public VoiceOrbContainer orbContainer;
+
+    [Header("SerialzedField")]
+
+    [SerializeField]
+    private int currentPatrolTarget = 0;
 
     [SerializeField]
     private float innerTime;
 
-    public float chasingOrbSpeed;
-    public float chasingPlayerSpeed;
-    public float patrolSpeed;
+    private float startY;
 
-    Animator anim;
+    private Animator anim;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         this.Initialize();
+
+        startY = transform.position.y;
+
+        // Only On Start
+        UpdateState();
+
+        Vector3 postProcessedTargetPos = targets[currentPatrolTarget].position;
+        postProcessedTargetPos.y = startY;
+
+        Quaternion lookOnLook = Quaternion.LookRotation((postProcessedTargetPos - transform.position).normalized);
+        transform.rotation = lookOnLook;
+
+        sqrPatrolRange = PatrolRange * PatrolRange;
     }
 
     private void Initialize()
     {
-        i = 0;
-        status = 1;
-        if(!anim)
+        sqrPatrolSwitchTargetRange = patrolSwitchTargetRange * patrolSwitchTargetRange;
+        if (!anim)
             anim = GetComponent<Animator>();
     }
 
     public void UpdateState()
     {
-        float orbSqrDistance = (transform.position - theOrb.transform.position).sqrMagnitude;
-        float playerSqrDistance = (transform.position - theUser.transform.position).sqrMagnitude;
-
-        if (orbSqrDistance < PatrolRange)
+        if(nowState != EnemyState.CHASEPLAYER && nowState != EnemyState.CHASEORB)
         {
-            nowState = EnemyState.CHASEORB;
-        }
-        else if (playerSqrDistance < PatrolRange)
-        {
-            nowState = EnemyState.CHASEPLAYER;
-        }
-        else
-        {
-            float rand = Random.Range(0, 1);
-            if (rand > idleProb)
+            float rand = Random.Range(0.0f, 1.0f);
+            if (rand >= idleProb)
             {
                 nowState = EnemyState.PATROL;
             }
@@ -99,34 +104,38 @@ public class MonsterStageEnemy : MonoBehaviour
         Chase(transform.position, theUser.transform.position, chasingPlayerSpeed);
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, PatrolRange);
+
+        for(int i = 0; i < targets.Length; ++i)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(targets[i].position, patrolSwitchTargetRange);
+        }
+    }
+
     public void Patrol()
     {
         // Go to patrol node
-        float distance = (transform.position - targets[i].transform.position).sqrMagnitude;
+        float sqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, targets[currentPatrolTarget].position);
 
-        if (distance < 5.0f && status == 1)
+        if (sqrDistance <= sqrPatrolSwitchTargetRange)
         {
-            i += 1;
-            i = i % targets.Length;
-            startTime = Time.time;
-            status = 2;
-            anim.SetBool("isWalk", false);
+            // switch target
+            currentPatrolTarget = (currentPatrolTarget + 1) % targets.Length;
         }
-        else if (status == 2)
-        {
-            Quaternion lookOnLook = Quaternion.LookRotation((targets[i].transform.position - transform.position).normalized);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
-            // idle
-            if ((Time.time - startTime) > 3)
-            {
-                status = 1;
-            }
-        }
-        else
-        {
-            anim.SetBool("isWalk", true);
-            Chase(transform.position, targets[i].transform.position, patrolSpeed);
-        }
+
+        Vector3 postProcessedTargetPos = targets[currentPatrolTarget].position;
+        postProcessedTargetPos.y = startY;
+
+        Quaternion lookOnLook = Quaternion.LookRotation((postProcessedTargetPos - transform.position).normalized);
+        transform.rotation = lookOnLook;
+
+        anim.SetBool("isWalk", true);
+        Chase(transform.position, targets[currentPatrolTarget].transform.position, patrolSpeed);
+
     }
 
     public void Idle()
@@ -157,47 +166,88 @@ public class MonsterStageEnemy : MonoBehaviour
         }
     }
 
+    float GetSqrDistanceWithoutReferenceYAxis(Vector3 pos1, Vector3 pos2)
+    {
+        Vector3 dis = pos1 - pos2;
+        dis.y = 0;
+        return dis.sqrMagnitude;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        innerTime += Time.deltaTime;
+        float orbSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theOrb.transform.position);
+        float playerSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theUser.transform.position);
 
-        if(innerTime > updateStatePeriod)
+        print(orbSqrDistance <= sqrPatrolRange);
+        print(!orbContainer.playerOrbs[0]);
+
+        // if isNear && Player throw orb
+        if (orbSqrDistance <= sqrPatrolRange && orbContainer.playerOrbs[0] == theOrb.gameObject)
         {
+            nowState = EnemyState.CHASEORB;
             innerTime = 0;
-            UpdateState();
-            DealState();
         }
+        else if (playerSqrDistance <= sqrPatrolRange)
+        {
+            nowState = EnemyState.CHASEPLAYER;
+            innerTime = 0;
+        }
+        else
+        {
+            if(nowState == EnemyState.CHASEORB || nowState == EnemyState.CHASEPLAYER)
+            {
+                nowState = EnemyState.IDLE;
+            }
+
+            innerTime += Time.deltaTime;
+
+            if (innerTime > updateStatePeriod)
+            {
+                innerTime = 0;
+                UpdateState();
+            }
+        }
+
+        DealState();
     }
 
     void Chase(Vector3 startPos, Vector3 targetPos, float speedFactor)
     {
         transform.position = Vector3.Lerp(startPos, targetPos, Time.deltaTime * speedFactor);
-        Quaternion lookOnLook = Quaternion.LookRotation((targetPos - startPos).normalized);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
+
+        // post process on position.y
+        Vector3 pos = transform.position;
+        pos.y = startY;
+        transform.position = pos;
+
+        Vector3 postProcessedTargetPos = targetPos;
+        postProcessedTargetPos.y = startY;
+
+        Quaternion lookOnLook = Quaternion.LookRotation((postProcessedTargetPos - startPos).normalized);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime * rotateSpeedFactor);
     }
 
-    void FindNearestNode()
+    int FindNearestTarget()
     {
-        int j;
-        int index = 0;
+        int minIndex = 0;
         float min_distance = Mathf.Infinity;
-        for (j = 0; j < targets_num; j+=1)
-        {
-            if(min_distance > (targets[j].transform.position - transform.position).sqrMagnitude)
-            {
-                min_distance = (targets[j].transform.position - transform.position).sqrMagnitude;
-                index = j;
+
+        for (int j = 0; j < targets.Length; j+=1){
+            float d = (targets[j].transform.position - transform.position).sqrMagnitude;
+            if (min_distance > d) {
+                min_distance = d;
+                minIndex = j;
             }
         }
 
-        i = index;
+        return minIndex;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        FindNearestNode();
-        status = 3;
+        //int nearsetIndex = FindNearestNode();
+        //status = 3;
         // 
     }
 }
