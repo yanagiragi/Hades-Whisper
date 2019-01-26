@@ -15,13 +15,20 @@ public class MonsterStageEnemy : MonoBehaviour
     public float PatrolRange;
     private float sqrPatrolRange;
 
-   public enum EnemyState
+    public float prefromingEatTimeLimit = 3.0f;
+
+    public Transform mouthTransfrom;
+
+    public GameObject FadeOutOrb;
+
+    public enum EnemyState
    {
         IDLE,
         PATROL,
         CHASEORB,
         CHASEPLAYER,
         ATTACK,
+        EATTING,
         LENGTH
    }
 
@@ -36,6 +43,8 @@ public class MonsterStageEnemy : MonoBehaviour
     public float patrolSpeed = 1.0f;
     public float patrolSwitchTargetRange = 5.0f;
     private float sqrPatrolSwitchTargetRange = 5.0f;
+    public float startBiteDistance;
+    private float sqrStartBiteDistance;
 
     public float rotateSpeedFactor = 1.0f;
 
@@ -69,6 +78,8 @@ public class MonsterStageEnemy : MonoBehaviour
         transform.rotation = lookOnLook;
 
         sqrPatrolRange = PatrolRange * PatrolRange;
+
+        sqrStartBiteDistance = startBiteDistance * startBiteDistance;
     }
 
     private void Initialize()
@@ -114,6 +125,9 @@ public class MonsterStageEnemy : MonoBehaviour
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(targets[i].position, patrolSwitchTargetRange);
         }
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, startBiteDistance);
     }
 
     public void Patrol()
@@ -176,40 +190,51 @@ public class MonsterStageEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float orbSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theOrb.transform.position);
-        float playerSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theUser.transform.position);
-
-        print(orbSqrDistance <= sqrPatrolRange);
-        print(!orbContainer.playerOrbs[0]);
-
-        // if isNear && Player throw orb
-        if (orbSqrDistance <= sqrPatrolRange && orbContainer.playerOrbs[0] == theOrb.gameObject)
+        if(nowState != EnemyState.EATTING)
         {
-            nowState = EnemyState.CHASEORB;
-            innerTime = 0;
-        }
-        else if (playerSqrDistance <= sqrPatrolRange)
-        {
-            nowState = EnemyState.CHASEPLAYER;
-            innerTime = 0;
-        }
-        else
-        {
-            if(nowState == EnemyState.CHASEORB || nowState == EnemyState.CHASEPLAYER)
+            if(!theOrb && nowState == EnemyState.CHASEPLAYER)
             {
-                nowState = EnemyState.IDLE;
+                // Already Eated, End Phase
+                anim.SetBool("isRun", true);
+                DealState();
+                return;
             }
 
-            innerTime += Time.deltaTime;
+            float orbSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theOrb.transform.position);
+            float playerSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theUser.transform.position);
 
-            if (innerTime > updateStatePeriod)
+            print(orbSqrDistance <= sqrPatrolRange);
+            print(!orbContainer.playerOrbs[0]);
+
+            // if isNear && Player throw orb
+            if (orbSqrDistance <= sqrPatrolRange && orbContainer.playerOrbs[0] == theOrb.gameObject)
             {
+                nowState = EnemyState.CHASEORB;
                 innerTime = 0;
-                UpdateState();
             }
-        }
+            else if (playerSqrDistance <= sqrPatrolRange)
+            {
+                nowState = EnemyState.CHASEPLAYER;
+                innerTime = 0;
+            }
+            else
+            {
+                if (nowState == EnemyState.CHASEORB || nowState == EnemyState.CHASEPLAYER)
+                {
+                    nowState = EnemyState.IDLE;
+                }
 
-        DealState();
+                innerTime += Time.deltaTime;
+
+                if (innerTime > updateStatePeriod)
+                {
+                    innerTime = 0;
+                    UpdateState();
+                }
+            }
+
+            DealState();
+        }
     }
 
     void Chase(Vector3 startPos, Vector3 targetPos, float speedFactor)
@@ -246,8 +271,87 @@ public class MonsterStageEnemy : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        //int nearsetIndex = FindNearestNode();
-        //status = 3;
-        // 
+        if(other.gameObject.CompareTag("Collective"))
+        {
+            if (nowState != EnemyState.EATTING)
+            {
+                nowState = EnemyState.EATTING;
+                StartCoroutine(PerformEating());
+            }
+        }
+        else if (other.gameObject.CompareTag("Player"))
+        {
+            TriggerAttackPlayer();
+        }
+    }
+
+    public void EatBall(GameObject theOrb)
+    {
+        FadeOutOrb = theOrb;
+        theOrb.GetComponent<Rigidbody>().useGravity = false;
+        theOrb.GetComponent<Rigidbody>().isKinematic = false;
+        theOrb.GetComponent<Collider>().enabled = false;
+
+        FadeOutOrb.GetComponent<FollowPosition>().target = mouthTransfrom;
+        FadeOutOrb.GetComponent<FollowPosition>().speed = 100f;
+    }
+
+    IEnumerator PerformEating()
+    {
+        float time = 0.0f;
+
+        while(time <= prefromingEatTimeLimit)
+        {
+            float sqrdistance = GetSqrDistanceWithoutReferenceYAxis(theOrb.position, transform.position);
+
+            if (sqrdistance <= sqrStartBiteDistance)
+            {
+                anim.SetTrigger("isBiting");
+
+                EatBall(theOrb.gameObject);
+
+                break;
+            }
+
+            time += Time.deltaTime;
+
+            if(FadeOutOrb)
+            {
+                Material mat = FadeOutOrb.GetComponent<Renderer>().material;
+                Color col = mat.GetColor("_EmissionColor");
+                // col = Color.Lerp(col, Color.black, Time.deltaTime);
+                //mat.SetColor("_EmissionColor", col);
+                FadeOutOrb.GetComponent<AudioSource>().volume -= Time.deltaTime;
+            }
+
+            yield return null;
+        }
+
+        while (time <= prefromingEatTimeLimit)
+        {
+            time += Time.deltaTime;
+
+            if (FadeOutOrb)
+            {
+                Material mat = FadeOutOrb.GetComponent<Renderer>().material;
+                Color col = mat.GetColor("_EmissionColor");
+                // col = Color.Lerp(col, Color.black, Time.deltaTime);
+                //mat.SetColor("_EmissionColor", col);
+                FadeOutOrb.GetComponent<AudioSource>().volume -= Time.deltaTime;
+            }
+
+            yield return null;
+        }
+
+        anim.SetBool("isBiting", false);
+        Destroy(FadeOutOrb);
+        FadeOutOrb = null;
+
+        nowState = EnemyState.CHASEPLAYER;
+    }
+
+    public void TriggerAttackPlayer()
+    {
+
     }
 }
