@@ -51,8 +51,8 @@ LightmapSettings:
     m_IndirectOutputScale: 1
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
-    m_EnableRealtimeLightmaps: 1
+    m_EnableBakedLightmaps: 0
+    m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 10
     m_Resolution: 2
@@ -540,6 +540,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5246609661853947020, guid: e4be5b886d981c24782b231b6e461f72,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4be5b886d981c24782b231b6e461f72, type: 3}
 --- !u!1 &1736118835
@@ -738,7 +743,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3ad34695fe44fd74395df6d5c6262eb6, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8aecf34426e1bd14587aa284f6644226, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -890,6 +895,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4635519135350868675, guid: 5bc4171e7411b5e4a88b43d7966fe936,
+        type: 3}
+      propertyPath: m_Height
+      value: 2.43
       objectReference: {fileID: 0}
     - target: {fileID: 1989418459961039287, guid: 5bc4171e7411b5e4a88b43d7966fe936,
         type: 3}
