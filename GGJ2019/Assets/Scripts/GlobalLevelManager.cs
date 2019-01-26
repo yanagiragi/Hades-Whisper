@@ -14,9 +14,15 @@ public class GlobalLevelManager : MonoBehaviour
 
     public Material placeHolderMaterial;
 
+    public GameObject Player;
+
+    public Transform RespawnPoint;
+
+    public Transform CheckPoint;
+
     void Start()
     {
-        
+        Player.transform.position = RespawnPoint.position;   
     }
 
     // Update is called once per frame

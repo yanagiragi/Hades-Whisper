@@ -107,6 +107,7 @@ public class MonsterStageEnemy : MonoBehaviour
 
     public void ChaseOrb()
     {
+
         Chase(transform.position, theOrb.transform.position, chasingOrbSpeed);
     }
 
@@ -203,11 +204,11 @@ public class MonsterStageEnemy : MonoBehaviour
             float orbSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theOrb.transform.position);
             float playerSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theUser.transform.position);
 
-            print(orbSqrDistance <= sqrPatrolRange);
-            print(!orbContainer.playerOrbs[0]);
+            // print(string.Format("{0} {1}", orbSqrDistance <= sqrPatrolRange, orbContainer.playerShootedOrb == theOrb));
 
             // if isNear && Player throw orb
-            if (orbSqrDistance <= sqrPatrolRange && orbContainer.playerOrbs[0] == theOrb.gameObject)
+            // Player throw orb need to be checked
+            if (orbSqrDistance <= sqrPatrolRange && theOrb.GetComponent<Renderer>().enabled)
             {
                 nowState = EnemyState.CHASEORB;
                 innerTime = 0;
@@ -251,6 +252,8 @@ public class MonsterStageEnemy : MonoBehaviour
 
         Quaternion lookOnLook = Quaternion.LookRotation((postProcessedTargetPos - startPos).normalized);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime * rotateSpeedFactor);
+
+        anim.SetBool("isWalk", true);
     }
 
     int FindNearestTarget()
@@ -352,6 +355,6 @@ public class MonsterStageEnemy : MonoBehaviour
 
     public void TriggerAttackPlayer()
     {
-
+        Time.timeScale = 0.0f;
     }
 }

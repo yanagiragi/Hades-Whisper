@@ -7,35 +7,20 @@ public class VoiceOrbContainer : MonoBehaviour
     [SerializeField]
     public int playerOrbMaxAmount;
 
-    public GameObject[] playerOrbs;
+    public GameObject playerGrabOrb;
+
+    public GameObject playerShootedOrb;
 
     public GameObject[] Orbs;
 
     void Start()
     {
-        playerOrbs = new GameObject[playerOrbMaxAmount];
-    }
-
-    public void Grab(int index, GameObject theOrb)
-    {
-        if (index >= playerOrbMaxAmount)
-        {
-            Debug.LogError("Attempt to store orb on index: " + index);
-        }
-        else
-        {
-            playerOrbs[index] = theOrb;
-
-            /*FixedJoint fj = Orbs[index].AddComponent<FixedJoint>();
-            fj.connectedBody = fixedJointTarget;
-            fj.breakForce = Mathf.Infinity;
-            fj.breakTorque = Mathf.Infinity;*/
-        }   
+        //playerOrbs = new GameObject[playerOrbMaxAmount];
     }
 
     public void Grab(GameObject theOrb)
     {
-        this.Grab(0, theOrb);
+        playerGrabOrb = theOrb;
     }
 
     public int GetNearestOrb(Transform playerTransform)

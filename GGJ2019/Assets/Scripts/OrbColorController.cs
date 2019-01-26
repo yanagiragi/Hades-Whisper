@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class OrbColorController : MonoBehaviour
 {
     void OnEnable()
     {
-        Renderer rend = GetComponent<Renderer>();
-        Light light = GetComponentInChildren<Light>();
+        //Renderer rend = GetComponent<Renderer>();
+        //Light light = GetComponentInChildren<Light>();
 
-        rend.material.shader = Shader.Find("_Color");
-        rend.material.SetColor("_Color", light.color);
+        //rend.material.shader = Shader.Find("_Color");
+        //rend.material.SetColor("_Color", light.color);
     }
 }

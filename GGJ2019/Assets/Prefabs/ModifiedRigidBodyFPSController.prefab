@@ -273,7 +273,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 1.6
+  m_Height: 2.43
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1290612419730125816
@@ -295,7 +295,7 @@ MonoBehaviour:
     StrafeSpeed: 4
     RunMultiplier: 1
     RunKey: 304
-    JumpForce: 50
+    JumpForce: 0
     SlopeCurveModifier:
       serializedVersion: 2
       m_Curve:
@@ -363,5 +363,4 @@ MonoBehaviour:
   forwardFactor: 1.57
   orbContainer: {fileID: 0}
   fixedJointTarget: {fileID: 2106705042}
-  grabbingOrb: {fileID: 0}
   mainCameraTransform: {fileID: 5180380311936181253}

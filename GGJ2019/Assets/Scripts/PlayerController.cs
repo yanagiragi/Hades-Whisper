@@ -67,6 +67,9 @@ public class PlayerController : MonoBehaviour
 
         grabbingOrb.GetComponent<FollowPosition>().target = null;
 
+        orbContainer.playerShootedOrb = orbContainer.playerGrabOrb;
+        orbContainer.playerGrabOrb = null;
+
         Rigidbody rb = grabbingOrb.GetComponent<Rigidbody>();
 
         rb.isKinematic = false;

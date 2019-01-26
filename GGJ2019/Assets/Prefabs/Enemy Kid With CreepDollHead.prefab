@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1172561237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1172561238}
+  m_Layer: 0
+  m_Name: MouthTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1172561238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172561237}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0033, y: 0.0149, z: 0.0539}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2023961626667374558}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &152783643377266041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1577,6 +1607,7 @@ Transform:
   m_Children:
   - {fileID: 4292135992385844090}
   - {fileID: 7941538837751276960}
+  - {fileID: 1172561238}
   m_Father: {fileID: 8605711316836215727}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1603,7 +1634,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4644324650163972289}
-  m_LocalRotation: {x: 0.0073235556, y: -0.022830168, z: 0.027863272, w: 0.99932414}
+  m_LocalRotation: {x: 0.007323556, y: -0.022830168, z: 0.027863273, w: 0.99932414}
   m_LocalPosition: {x: 0.006260068, y: 0.026479045, z: -0.00024538612}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2288,10 +2319,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7363571962089907559}
   - component: {fileID: 3507542394046255596}
+  - component: {fileID: 2083789973}
+  - component: {fileID: 2083789972}
   m_Layer: 0
   m_Name: Enemy Kid With CreepDollHead
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -2304,7 +2337,7 @@ Transform:
   m_GameObject: {fileID: 7132171919336787710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.2537, y: -2.4219, z: -0.017403}
-  m_LocalScale: {x: 32.319, y: 32.319, z: 32.319}
+  m_LocalScale: {x: 13.764663, y: 13.764663, z: 13.764663}
   m_Children:
   - {fileID: 2995328431192908025}
   - {fileID: 1732827420858283013}
@@ -2327,7 +2360,7 @@ Animator:
   m_GameObject: {fileID: 7132171919336787710}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: ef9e77be6f4a7084cb3f94a3ea7fc2ed, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 878bc623668170341b786f37c8f3e2a1, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -2336,6 +2369,54 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!136 &2083789973
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7132171919336787710}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.15
+  m_Height: 0.76
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.19, z: 0}
+--- !u!114 &2083789972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7132171919336787710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ece9ae56e5a315244bfe7ff5719aa014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targets:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  theOrb: {fileID: 0}
+  theUser: {fileID: 0}
+  PatrolRange: 7.27
+  prefromingEatTimeLimit: 3
+  mouthTransfrom: {fileID: 1172561238}
+  FadeOutOrb: {fileID: 0}
+  nowState: 0
+  idleProb: 0.5
+  updateStatePeriod: 5
+  chasingOrbSpeed: 1
+  chasingPlayerSpeed: 1
+  patrolSpeed: 0.1
+  patrolSwitchTargetRange: 1.7
+  startBiteDistance: 1.65
+  rotateSpeedFactor: 3
+  orbContainer: {fileID: 0}
+  currentPatrolTarget: 0
+  innerTime: 0
 --- !u!1 &7347237341772585012
 GameObject:
   m_ObjectHideFlags: 0
@@ -2862,7 +2943,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8365105034657759039}
-  m_LocalRotation: {x: -0.5371032, y: -0.45754182, z: 0.5442563, w: -0.45382884}
+  m_LocalRotation: {x: -0.53710324, y: -0.45754185, z: 0.5442564, w: -0.45382887}
   m_LocalPosition: {x: 0.010734776, y: 0.026254453, z: -0.00021404774}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

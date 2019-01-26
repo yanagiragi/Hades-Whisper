@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 8336060515853414027}
   - component: {fileID: 8336060515853414032}
   - component: {fileID: 382289619}
+  - component: {fileID: 3172757649269460632}
   m_Layer: 0
   m_Name: TestOrb1
   m_TagString: Collective
@@ -164,7 +165,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.25
+  m_Radius: 4.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8336060515853414037
 MonoBehaviour:
@@ -317,3 +318,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58374fdf4b4f1934581dfaefca4a7a23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3172757649269460632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8336060515853414024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75be819e3e535344995e80129ba4a0b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 0}
