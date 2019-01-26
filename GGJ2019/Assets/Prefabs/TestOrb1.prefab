@@ -41,9 +41,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 2
-  m_Color: {r: 0.9427508, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.06293106, b: 1, a: 1}
   m_Intensity: 1
-  m_Range: 4.98
+  m_Range: 2
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -85,6 +85,7 @@ GameObject:
   - component: {fileID: 8336060515853414026}
   - component: {fileID: 8336060515853414027}
   - component: {fileID: 8336060515853414032}
+  - component: {fileID: 382289619}
   m_Layer: 0
   m_Name: TestOrb1
   m_TagString: Untagged
@@ -99,7 +100,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8336060515853414024}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.41, y: 0.51, z: 0.03}
   m_LocalScale: {x: 0.62764, y: 0.62764, z: 0.62764}
   m_Children:
@@ -304,3 +305,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &382289619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8336060515853414024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58374fdf4b4f1934581dfaefca4a7a23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
