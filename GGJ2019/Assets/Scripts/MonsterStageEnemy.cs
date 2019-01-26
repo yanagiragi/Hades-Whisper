@@ -21,79 +21,160 @@ public class MonsterStageEnemy : MonoBehaviour
     public int targets_num;
     public bool passive;
 
+   public enum EnemyState
+   {
+        IDLE,
+        PATROL,
+        CHASEORB,
+        CHASEPLAYER,
+        ATTACK,
+        LENGTH
+   }
+
+    public EnemyState nowState;
+
+    [Range(0,1)]
+    public float idleProb = 0.5f;
+
+    public float updateStatePeriod;
+
+    [SerializeField]
+    private float innerTime;
+
+    public float chasingOrbSpeed;
+    public float chasingPlayerSpeed;
+    public float patrolSpeed;
+
     Animator anim;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        this.Initialize();
+    }
+
+    private void Initialize()
+    {
         i = 0;
         status = 1;
-        anim = GetComponent<Animator>();
+        if(!anim)
+            anim = GetComponent<Animator>();
+    }
+
+    public void UpdateState()
+    {
+        float orbSqrDistance = (transform.position - theOrb.transform.position).sqrMagnitude;
+        float playerSqrDistance = (transform.position - theUser.transform.position).sqrMagnitude;
+
+        if (orbSqrDistance < PatrolRange)
+        {
+            nowState = EnemyState.CHASEORB;
+        }
+        else if (playerSqrDistance < PatrolRange)
+        {
+            nowState = EnemyState.CHASEPLAYER;
+        }
+        else
+        {
+            float rand = Random.Range(0, 1);
+            if (rand > idleProb)
+            {
+                nowState = EnemyState.PATROL;
+            }
+            else
+            {
+                nowState = EnemyState.IDLE;
+            }
+        }
     }
 
     public void ChaseOrb()
     {
-        // Find the orb
-        status = 1;
-        chase(transform.position, theOrb.transform.position);
-        Debug.Log("Find Orb");
+        Chase(transform.position, theOrb.transform.position, chasingOrbSpeed);
     }
 
     public void ChasePlayer()
     {
-        // Find the user
-        status = 1;
-        chase(transform.position, theUser.transform.position);
-        Debug.Log("Find User");
+        Chase(transform.position, theUser.transform.position, chasingPlayerSpeed);
+    }
+
+    public void Patrol()
+    {
+        // Go to patrol node
+        float distance = (transform.position - targets[i].transform.position).sqrMagnitude;
+
+        if (distance < 5.0f && status == 1)
+        {
+            i += 1;
+            i = i % targets.Length;
+            startTime = Time.time;
+            status = 2;
+            anim.SetBool("isWalk", false);
+        }
+        else if (status == 2)
+        {
+            Quaternion lookOnLook = Quaternion.LookRotation((targets[i].transform.position - transform.position).normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
+            // idle
+            if ((Time.time - startTime) > 3)
+            {
+                status = 1;
+            }
+        }
+        else
+        {
+            anim.SetBool("isWalk", true);
+            Chase(transform.position, targets[i].transform.position, patrolSpeed);
+        }
+    }
+
+    public void Idle()
+    {
+        anim.SetBool("isAttack", false);
+        anim.SetBool("isWalk", false);
+    }
+
+    public void DealState()
+    {
+        switch (nowState)
+        {
+            case EnemyState.IDLE:
+                Idle();
+                break;
+            case EnemyState.CHASEORB:
+                ChaseOrb();
+                break;
+            case EnemyState.CHASEPLAYER:
+                ChasePlayer();
+                break;
+            case EnemyState.ATTACK:
+                // not yet
+                break;
+            case EnemyState.PATROL:
+                Patrol();
+                break;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if ((transform.position - theOrb.transform.position).sqrMagnitude < PatrolRange)
-        {
-            // Find the orb
-            ChaseOrb();
-        } else if ((transform.position - theUser.transform.position).sqrMagnitude < PatrolRange)
-        {
-            // Find the user
-            ChasePlayer();
-        }
-        else if(passive == false){
-            // Go to patrol node
-            float distance = (transform.position - targets[i].transform.position).sqrMagnitude;
+        innerTime += Time.deltaTime;
 
-            if ( distance < 5.0f && status==1)
-            {
-                i += 1;
-                i = i % targets.Length;
-                startTime = Time.time;
-                status = 2;
-                anim.SetBool("isWalk", false);
-            } else if(status==2)
-            {
-                Quaternion lookOnLook = Quaternion.LookRotation((targets[i].transform.position - transform.position).normalized);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
-                // idle
-                if ((Time.time - startTime) > 3)
-                {
-                    status = 1;
-                }
-            }
-            else
-            {
-                anim.SetBool("isWalk", true);
-                chase(transform.position, targets[i].transform.position);
-            }
+        if(innerTime > updateStatePeriod)
+        {
+            innerTime = 0;
+            UpdateState();
+            DealState();
         }
     }
 
-    void chase(Vector3 startPos, Vector3 targetPos)
+    void Chase(Vector3 startPos, Vector3 targetPos, float speedFactor)
     {
-            transform.position = Vector3.Lerp(startPos, targetPos, Time.deltaTime * 0.5f);
-            Quaternion lookOnLook = Quaternion.LookRotation((targetPos - startPos).normalized);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
+        transform.position = Vector3.Lerp(startPos, targetPos, Time.deltaTime * speedFactor);
+        Quaternion lookOnLook = Quaternion.LookRotation((targetPos - startPos).normalized);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
     }
 
     void FindNearestNode()
