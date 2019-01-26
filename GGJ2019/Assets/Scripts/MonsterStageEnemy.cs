@@ -99,12 +99,12 @@ public class MonsterStageEnemy : MonoBehaviour
         {
             if(max_distance < (targets[j].transform.position - transform.position).sqrMagnitude)
             {
-                max_distance = (targets[j].transform.position - transform.position).sqrMagnitude
-                index = j;
+                max_distance = (targets[j].transform.position - transform.position).sqrMagnitude;
+                // index = j;
             }
         }
 
-        i = j;
+        // i = j;
     }
 
     void OnTriggerEnter(Collider other)
