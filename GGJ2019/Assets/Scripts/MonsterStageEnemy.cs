@@ -5,7 +5,6 @@ using UnityEngine;
 public class MonsterStageEnemy : MonoBehaviour
 {
     // Patrol Path
-    public GameObject t0, t1, t2;
     public GameObject[] targets;
 
     // VoiceOrb
@@ -20,6 +19,7 @@ public class MonsterStageEnemy : MonoBehaviour
     public int status;
     public int i;
     public int targets_num;
+    public bool passive;
 
     Animator anim;
 
@@ -27,15 +27,25 @@ public class MonsterStageEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        targets_num = 3;
-        targets = new GameObject[targets_num];
-        targets[0] = t0;
-        targets[1] = t1;
-        targets[2] = t2;
-        PatrolRange = 30;
         i = 0;
         status = 1;
         anim = GetComponent<Animator>();
+    }
+
+    public void ChaseOrb()
+    {
+        // Find the orb
+        status = 1;
+        chase(transform.position, theOrb.transform.position);
+        Debug.Log("Find Orb");
+    }
+
+    public void ChasePlayer()
+    {
+        // Find the user
+        status = 1;
+        chase(transform.position, theUser.transform.position);
+        Debug.Log("Find User");
     }
 
     // Update is called once per frame
@@ -44,24 +54,20 @@ public class MonsterStageEnemy : MonoBehaviour
         if ((transform.position - theOrb.transform.position).sqrMagnitude < PatrolRange)
         {
             // Find the orb
-            status = 1;
-            chase(transform.position, theOrb.transform.position);
-            Debug.Log("Find Orb");
+            ChaseOrb();
         } else if ((transform.position - theUser.transform.position).sqrMagnitude < PatrolRange)
         {
             // Find the user
-            status = 1;
-            chase(transform.position, theUser.transform.position);
-            Debug.Log("Find User");
+            ChasePlayer();
         }
-        else {
+        else if(passive == false){
             // Go to patrol node
             float distance = (transform.position - targets[i].transform.position).sqrMagnitude;
 
             if ( distance < 5.0f && status==1)
             {
                 i += 1;
-                i = i % 3;
+                i = i % targets.Length;
                 startTime = Time.time;
                 status = 2;
                 anim.SetBool("isWalk", false);
@@ -90,25 +96,27 @@ public class MonsterStageEnemy : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, lookOnLook, Time.deltaTime);
     }
 
-    void GoBack()
+    void FindNearestNode()
     {
         int j;
-        int index;
-        float max_distance = -1f;
+        int index = 0;
+        float min_distance = Mathf.Infinity;
         for (j = 0; j < targets_num; j+=1)
         {
-            if(max_distance < (targets[j].transform.position - transform.position).sqrMagnitude)
+            if(min_distance > (targets[j].transform.position - transform.position).sqrMagnitude)
             {
-                max_distance = (targets[j].transform.position - transform.position).sqrMagnitude;
-                // index = j;
+                min_distance = (targets[j].transform.position - transform.position).sqrMagnitude;
+                index = j;
             }
         }
 
-        // i = j;
+        i = index;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        GoBack();
+        FindNearestNode();
+        status = 3;
+        // 
     }
 }
