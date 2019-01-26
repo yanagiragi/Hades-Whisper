@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class GameOverImageFade : MonoBehaviour
+public class GameOverFade : MonoBehaviour
 {
     private Material mat;
 
