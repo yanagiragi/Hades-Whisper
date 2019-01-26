@@ -18,10 +18,10 @@ public class PlayerController : MonoBehaviour
 
     public Transform fixedJointTarget;
 
-    public GameObject grabbingOrb;
-
     public Transform mainCameraTransform;
 
+    private GameObject grabbingOrb;
+    
     void Start()
     {
         isCarrying = false;
