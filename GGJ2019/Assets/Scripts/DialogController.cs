@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class DialogController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject Next;
+    public GameObject End;
+
+    public void OnTriggerEnter(Collider other)
     {
-        
+        if (other.gameObject.CompareTag("Player"))
+        {
+            if(Next != null){
+                this.gameObject.SetActive(false);
+                Next.SetActive(true);
+            }
+            else
+            {
+                End.SetActive(true);
+            }
+
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
