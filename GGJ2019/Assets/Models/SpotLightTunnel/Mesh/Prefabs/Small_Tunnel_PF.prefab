@@ -52,7 +52,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4863175718099246
 Transform:
   m_ObjectHideFlags: 0
@@ -74,12 +74,12 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1041835303388304}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 8
   m_Type: 2
   m_Color: {r: 1, g: 0.8760649, b: 0.6544118, a: 1}
-  m_Intensity: 0.2
-  m_Range: 3.33
+  m_Intensity: 0.1
+  m_Range: 3
   m_SpotAngle: 131.3
   m_CookieSize: 10
   m_Shadows:
@@ -460,7 +460,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 64
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4685565670172462
 Transform:
   m_ObjectHideFlags: 0
