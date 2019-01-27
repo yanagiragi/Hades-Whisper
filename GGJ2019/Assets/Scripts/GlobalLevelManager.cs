@@ -40,12 +40,44 @@ public class GlobalLevelManager : MonoBehaviour
 
     public MonsterStageEnemy SpiderBehaviour;
 
-    void Start()
+    public bool isDead;
+
+    private void Awake()
     {
+        //if we don't have an [_instance] set yet
         if (!instance)
             instance = this;
+        //otherwise, if we do, kill this thing
+        else
+        {
+            instance.RespawnPoint = this.CheckPoint;
+            instance.CheckPoint = this.CheckPoint;
+            
+            instance.levelOneAnimations = this.levelOneAnimations;
+            instance.levelOneAnimators = this.levelOneAnimators;
+            instance.levelOneEmmisiveGameObjects = this.levelOneEmmisiveGameObjects;
+
+            instance.levelTwoAnimations = this.levelTwoAnimations;
+            instance.levelTwoAnimators = this.levelTwoAnimators;
+            instance.levelTwoEmmisiveGameObjects = this.levelTwoEmmisiveGameObjects;
+            
+            instance.Player = this.Player;
+            instance.nowLevel = this.nowLevel;
+            instance.orbController =this.orbController;
+            instance.DollBehaviour = this.DollBehaviour;
+            instance.SpiderBehaviour = this.SpiderBehaviour;
+            instance.gameOverUIAnimator = this.gameOverUIAnimator;
+
+            Destroy(this.gameObject);
+        }
+        
+        DontDestroyOnLoad(this.gameObject);
+    }
+
+    void Start()
+    {
         instance.nowLevel = 1;
-        Player.transform.position = RespawnPoint.position;   
+        Player.transform.position = isDead ? CheckPoint.position : RespawnPoint.position;
     }
 
     // Update is called once per frame
@@ -180,5 +212,19 @@ public class GlobalLevelManager : MonoBehaviour
     public void Dead()
     {
         gameOverUIAnimator.SetTrigger("GameOver");
+
+        isDead = true;
+
+        StartCoroutine(Replay());
+    }
+
+    IEnumerator Replay()
+    {
+        yield return new WaitForSecondsRealtime(10f);
+
+        instance.RespawnPoint.position = instance.CheckPoint.position;
+        
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("MainScene");
+
     }
 }
