@@ -218,7 +218,6 @@ public class MonsterStageEnemy : MonoBehaviour
             float playerSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theUser.transform.position);
 
             // print(string.Format("{0} {1}", orbSqrDistance <= sqrPatrolRange, orbContainer.playerShootedOrb == theOrb));
-            print(nowState);
 
             // if isNear && Player throw orb
             // Player throw orb need to be checked
@@ -396,9 +395,11 @@ public class MonsterStageEnemy : MonoBehaviour
     {
         // Time.timeScale = 0.0f;
 
-        anim.speed = 0.0f;
+    
 
         chasingPlayerSpeed = 0.0f;
+
+        GlobalLevelManager.instance.Player.GetComponent<DeathCam>().isDead = true;
 
         GlobalLevelManager.instance.Player.GetComponent<UnityStandardAssets.Characters.FirstPerson.RigidbodyFirstPersonController>().enabled = false;
 

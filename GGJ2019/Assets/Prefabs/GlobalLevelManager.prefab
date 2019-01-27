@@ -46,7 +46,29 @@ MonoBehaviour:
   levelOneLights: []
   levelTwoLights: []
   levelThreeLights: []
-  levelOneEmmisiveGameObjects: []
-  levelTwoEmmisiveGameObjects: []
+  levelOneEmmisiveGameObjects:
+  - {fileID: 0}
+  levelTwoEmmisiveGameObjects:
+  - {fileID: 0}
   levelThreeEmmisiveGameObjects: []
+  levelOneAnimators:
+  - {fileID: 0}
+  levelTwoAnimators:
+  - {fileID: 0}
+  levelThreeAnimators: []
+  levelOneAnimations:
+  - {fileID: 0}
+  levelTwoAnimations:
+  - {fileID: 0}
+  levelThreeAnimations: []
   placeHolderMaterial: {fileID: 2100000, guid: 49d1e45af8057b54a8733ea8b2826da6, type: 2}
+  Player: {fileID: 0}
+  RespawnPoint: {fileID: 0}
+  CheckPoint: {fileID: 0}
+  nowLevel: 1
+  orbController: {fileID: 0}
+  gameOverUIAnimator: {fileID: 0}
+  gameOverJumpScareAnimator: {fileID: 0}
+  DollBehaviour: {fileID: 0}
+  SpiderBehaviour: {fileID: 0}
+  isDead: 0

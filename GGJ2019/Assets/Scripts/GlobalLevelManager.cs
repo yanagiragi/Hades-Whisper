@@ -36,6 +36,8 @@ public class GlobalLevelManager : MonoBehaviour
 
     public Animator gameOverUIAnimator;
 
+    public Animator gameOverJumpScareAnimator;
+
     public MonsterStageEnemy DollBehaviour;
 
     public MonsterStageEnemy SpiderBehaviour;
@@ -67,6 +69,8 @@ public class GlobalLevelManager : MonoBehaviour
             instance.DollBehaviour = this.DollBehaviour;
             instance.SpiderBehaviour = this.SpiderBehaviour;
             instance.gameOverUIAnimator = this.gameOverUIAnimator;
+
+            instance.gameOverJumpScareAnimator = this.gameOverJumpScareAnimator;
 
             Destroy(this.gameObject);
         }
@@ -212,6 +216,8 @@ public class GlobalLevelManager : MonoBehaviour
     public void Dead()
     {
         gameOverUIAnimator.SetTrigger("GameOver");
+
+        gameOverJumpScareAnimator.SetTrigger("jump");
 
         isDead = true;
 
