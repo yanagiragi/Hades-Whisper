@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 8336060515853414032}
   - component: {fileID: 382289619}
   - component: {fileID: 3172757649269460632}
+  - component: {fileID: 6747138824495818850}
   m_Layer: 0
   m_Name: TestOrb1
   m_TagString: Collective
@@ -331,3 +332,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
+--- !u!114 &6747138824495818850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8336060515853414024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 874a88e51280fab4182f8a3e925c7748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MonsterStageEnemy : MonoBehaviour
 {
+    public bool willAtkPlayer = true;
+
     // Patrol Path
     public Transform[] targets;
 
@@ -29,12 +31,13 @@ public class MonsterStageEnemy : MonoBehaviour
         CHASEPLAYER,
         ATTACK,
         EATTING,
+        LOOPIDLE,
         LENGTH
    }
 
     public EnemyState nowState;
 
-    [Range(0,1)]
+    [Range(0,2)]
     public float idleProb = 0.5f;
 
     public float updateStatePeriod;    
@@ -71,11 +74,15 @@ public class MonsterStageEnemy : MonoBehaviour
         // Only On Start
         UpdateState();
 
-        Vector3 postProcessedTargetPos = targets[currentPatrolTarget].position;
-        postProcessedTargetPos.y = startY;
+        if (targets.Length > 0)
+        {
+            Vector3 postProcessedTargetPos = targets[currentPatrolTarget].position;
+            postProcessedTargetPos.y = startY;
 
-        Quaternion lookOnLook = Quaternion.LookRotation((postProcessedTargetPos - transform.position).normalized);
-        transform.rotation = lookOnLook;
+            Quaternion lookOnLook = Quaternion.LookRotation((postProcessedTargetPos - transform.position).normalized);
+            transform.rotation = lookOnLook;
+        }
+      
 
         sqrPatrolRange = PatrolRange * PatrolRange;
 
@@ -107,7 +114,6 @@ public class MonsterStageEnemy : MonoBehaviour
 
     public void ChaseOrb()
     {
-
         Chase(transform.position, theOrb.transform.position, chasingOrbSpeed);
     }
 
@@ -193,10 +199,17 @@ public class MonsterStageEnemy : MonoBehaviour
     {
         if(nowState != EnemyState.EATTING)
         {
-            if(!theOrb && nowState == EnemyState.CHASEPLAYER)
+            if(!theOrb && nowState == EnemyState.CHASEPLAYER && willAtkPlayer)
             {
                 // Already Eated, End Phase
                 anim.SetBool("isRun", true);
+                DealState();
+                return;
+            }
+            else if((nowState == EnemyState.LOOPIDLE && !willAtkPlayer))
+            {
+                // Already Eated, End Phase
+                anim.SetBool("isAttack", true);
                 DealState();
                 return;
             }
@@ -205,15 +218,16 @@ public class MonsterStageEnemy : MonoBehaviour
             float playerSqrDistance = GetSqrDistanceWithoutReferenceYAxis(transform.position, theUser.transform.position);
 
             // print(string.Format("{0} {1}", orbSqrDistance <= sqrPatrolRange, orbContainer.playerShootedOrb == theOrb));
+            print(nowState);
 
             // if isNear && Player throw orb
             // Player throw orb need to be checked
-            if (orbSqrDistance <= sqrPatrolRange && theOrb.GetComponent<Renderer>().enabled)
+            if (orbSqrDistance <= sqrPatrolRange && orbContainer.playerShootedOrb && theOrb.GetComponent<Renderer>().enabled)
             {
                 nowState = EnemyState.CHASEORB;
                 innerTime = 0;
             }
-            else if (playerSqrDistance <= sqrPatrolRange)
+            else if (willAtkPlayer && playerSqrDistance <= sqrPatrolRange)
             {
                 nowState = EnemyState.CHASEPLAYER;
                 innerTime = 0;
@@ -282,7 +296,7 @@ public class MonsterStageEnemy : MonoBehaviour
                 StartCoroutine(PerformEating());
             }
         }
-        else if (other.gameObject.CompareTag("Player"))
+        else if (willAtkPlayer && other.gameObject.CompareTag("Player"))
         {
             TriggerAttackPlayer();
         }
@@ -299,6 +313,12 @@ public class MonsterStageEnemy : MonoBehaviour
         FadeOutOrb.GetComponent<FollowPosition>().speed = 100f;
     }
 
+    public void Stop()
+    {
+        anim.speed = 0.0f;
+        nowState = EnemyState.EATTING;
+    }
+
     IEnumerator PerformEating()
     {
         float time = 0.0f;
@@ -307,13 +327,26 @@ public class MonsterStageEnemy : MonoBehaviour
         {
             float sqrdistance = GetSqrDistanceWithoutReferenceYAxis(theOrb.position, transform.position);
 
+            // print(sqrdistance);
+
             if (sqrdistance <= sqrStartBiteDistance)
             {
                 anim.SetTrigger("isBiting");
 
+                anim.SetBool("isWalk", false);
+
+                anim.SetBool("isAttack", true);
+
+                // Remove
+                orbContainer.Grab(theOrb.gameObject);
+
                 EatBall(theOrb.gameObject);
 
                 break;
+            }
+            else
+            {
+                ChaseOrb();
             }
 
             time += Time.deltaTime;
@@ -346,15 +379,29 @@ public class MonsterStageEnemy : MonoBehaviour
             yield return null;
         }
 
-        anim.SetBool("isBiting", false);
-        Destroy(FadeOutOrb);
-        FadeOutOrb = null;
+        // anim.SetBool("isBiting", false);
+        if (willAtkPlayer)
+        {
+            Destroy(FadeOutOrb);
+            FadeOutOrb = null;
+        }
 
-        nowState = EnemyState.CHASEPLAYER;
+        if (willAtkPlayer)
+            nowState = EnemyState.CHASEPLAYER;
+        else
+            nowState = EnemyState.LOOPIDLE;
     }
 
     public void TriggerAttackPlayer()
     {
-        Time.timeScale = 0.0f;
+        // Time.timeScale = 0.0f;
+
+        anim.speed = 0.0f;
+
+        chasingPlayerSpeed = 0.0f;
+
+        GlobalLevelManager.instance.Player.GetComponent<UnityStandardAssets.Characters.FirstPerson.RigidbodyFirstPersonController>().enabled = false;
+
+        GlobalLevelManager.instance.Dead();
     }
 }

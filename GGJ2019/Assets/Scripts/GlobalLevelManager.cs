@@ -12,6 +12,14 @@ public class GlobalLevelManager : MonoBehaviour
     public GameObject[] levelTwoEmmisiveGameObjects;
     public GameObject[] levelThreeEmmisiveGameObjects;
 
+    public Animator[] levelOneAnimators;
+    public Animator[] levelTwoAnimators;
+    public Animator[] levelThreeAnimators;
+
+    public Animation[] levelOneAnimations;
+    public Animation[] levelTwoAnimations;
+    public Animation[] levelThreeAnimations;
+
     public Material placeHolderMaterial;
 
     public GameObject Player;
@@ -20,8 +28,23 @@ public class GlobalLevelManager : MonoBehaviour
 
     public Transform CheckPoint;
 
+    public int nowLevel = 1;
+
+    public static GlobalLevelManager instance = null;
+
+    public VoiceOrbContainer orbController;
+
+    public Animator gameOverUIAnimator;
+
+    public MonsterStageEnemy DollBehaviour;
+
+    public MonsterStageEnemy SpiderBehaviour;
+
     void Start()
     {
+        if (!instance)
+            instance = this;
+        instance.nowLevel = 1;
         Player.transform.position = RespawnPoint.position;   
     }
 
@@ -31,7 +54,7 @@ public class GlobalLevelManager : MonoBehaviour
         
     }
 
-    public void InvokeEnterZone(int index)
+    public void InvokeEnterZone(int index, DetectPlayerEnterZone detectPlayerEnterZone)
     {
         // ${index} zone means we leave zone ${index} and need to turn off zone ${index}'s lights
         switch (index)
@@ -62,5 +85,100 @@ public class GlobalLevelManager : MonoBehaviour
                 Debug.LogError("Error Index of Enter Zone: " + index);
                 break;
         }
+
+        switch(nowLevel)
+        {
+            case 1:
+                for (int i = 0; i < orbController.Level1Orbs.Count; ++i)
+                {
+                    if (orbController.Level1Orbs[i])
+                        detectPlayerEnterZone.DropOrb(orbController, orbController.Level1Orbs[i]);
+                }
+                break;
+            case 2:
+                for (int i = 0; i < orbController.Level2Orbs.Count; ++i)
+                {
+                    if (orbController.Level2Orbs[i])
+                        detectPlayerEnterZone.DropOrb(orbController, orbController.Level2Orbs[i]);
+                }
+                break;
+            case 3:
+                for (int i = 0; i < orbController.Level3Orbs.Count; ++i)
+                {
+                    if (orbController.Level3Orbs[i])
+                        detectPlayerEnterZone.DropOrb(orbController, orbController.Level3Orbs[i]);
+                }
+                break;
+            default:
+                print("Error on GLM");
+                break;
+        }
+
+        switch (nowLevel)
+        {
+            case 1:
+                for (int i = 0; i < levelOneAnimators.Length; ++i)
+                {
+                    levelOneAnimators[i].speed = 0.0f;
+                }
+                break;
+            case 2:
+                for (int i = 0; i < levelTwoAnimators.Length; ++i)
+                {
+                    levelTwoAnimators[i].speed = 0.0f;
+                }
+                break;
+            case 3:
+                for (int i = 0; i < levelThreeAnimators.Length; ++i)
+                {
+                    levelThreeAnimators[i].speed = 0.0f;
+                }
+                break;
+            default:
+                print("Error on GLM");
+                break;
+        }
+
+        switch (nowLevel)
+        {
+            case 1:
+                for (int i = 0; i < levelOneAnimations.Length; ++i)
+                {
+                    levelOneAnimations[i].enabled = false;
+                }
+                break;
+            case 2:
+                for (int i = 0; i < levelTwoAnimations.Length; ++i)
+                {
+                    levelTwoAnimations[i].enabled = false;
+                }
+                break;
+            case 3:
+                for (int i = 0; i < levelThreeAnimations.Length; ++i)
+                {
+                    levelThreeAnimations[i].enabled = false;
+                }
+                break;
+            default:
+                print("Error on GLM");
+                break;
+        }
+
+        if (nowLevel == 1)
+        {
+            SpiderBehaviour.Stop();
+        }
+        else if(nowLevel == 2)
+        {
+            DollBehaviour.Stop();
+        }
+
+        nowLevel = detectPlayerEnterZone.index + 1;
+
+    }
+
+    public void Dead()
+    {
+        gameOverUIAnimator.SetTrigger("GameOver");
     }
 }

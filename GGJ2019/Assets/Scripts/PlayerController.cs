@@ -43,8 +43,8 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                
-                GameObject nearestOrb = orbContainer.Orbs[orbContainer.GetNearestOrb(transform)];
+
+                GameObject nearestOrb = orbContainer.GetNearestOrb(GlobalLevelManager.instance.nowLevel, transform);
 
                 if (nearestOrb)
                 {
@@ -77,9 +77,12 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce((mainCameraTransform.forward * forwardFactor + mainCameraTransform.up).normalized * forceFactor, ForceMode.Acceleration);
 
+        orbContainer.Restore(grabbingOrb);
+
         isCarrying = false;
 
         grabbingOrb = null;
+
     }
 
     void Collect(GameObject nearestOrb)
