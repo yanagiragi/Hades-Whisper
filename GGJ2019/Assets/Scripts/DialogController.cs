@@ -7,6 +7,10 @@ public class DialogController : MonoBehaviour
     public GameObject Next;
     public GameObject End;
 
+    [Header("Ending Only")]
+    public float factor;
+    public AudioSource endingBGM;
+
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -19,6 +23,8 @@ public class DialogController : MonoBehaviour
             else
             {
                 End.SetActive(true);
+                StartCoroutine(Endings());
+                this.enabled = false;
             }
 
         }
@@ -29,6 +35,18 @@ public class DialogController : MonoBehaviour
         yield return new WaitForSeconds(3f);
         this.gameObject.SetActive(false);
 
+    }
+
+    IEnumerator Endings()
+    {
+        yield return new WaitForSeconds(8f);
+        
+        while(endingBGM.volume > 0)
+        {
+            endingBGM.volume -= Time.deltaTime * factor;
+            yield return new WaitForSeconds(0.1f);
+        }
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Menu");
     }
 
 }

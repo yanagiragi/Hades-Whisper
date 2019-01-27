@@ -316,6 +316,7 @@ public class MonsterStageEnemy : MonoBehaviour
     {
         anim.speed = 0.0f;
         nowState = EnemyState.EATTING;
+        this.enabled = false;
     }
 
     IEnumerator PerformEating()
