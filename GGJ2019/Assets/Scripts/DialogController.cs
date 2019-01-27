@@ -46,7 +46,7 @@ public class DialogController : MonoBehaviour
             endingBGM.volume -= Time.deltaTime * factor;
             yield return new WaitForSeconds(0.1f);
         }
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Menu");
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("NewScene");
     }
 
 }
