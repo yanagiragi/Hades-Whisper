@@ -11,9 +11,10 @@ public class DialogController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+
             if(Next != null){
-                this.gameObject.SetActive(false);
                 Next.SetActive(true);
+                StartCoroutine(Turnoffball());
             }
             else
             {
@@ -21,6 +22,13 @@ public class DialogController : MonoBehaviour
             }
 
         }
+    }
+
+    IEnumerator Turnoffball()
+    {
+        yield return new WaitForSeconds(3f);
+        this.gameObject.SetActive(false);
+
     }
 
 }
