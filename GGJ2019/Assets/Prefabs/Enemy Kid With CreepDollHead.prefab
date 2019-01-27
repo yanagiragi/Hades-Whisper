@@ -2337,7 +2337,7 @@ Transform:
   m_GameObject: {fileID: 7132171919336787710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.2537, y: -2.4219, z: -0.017403}
-  m_LocalScale: {x: 13.764663, y: 13.764663, z: 13.764663}
+  m_LocalScale: {x: 13.764686, y: 13.764663, z: 13.764686}
   m_Children:
   - {fileID: 2995328431192908025}
   - {fileID: 1732827420858283013}
@@ -2363,7 +2363,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 878bc623668170341b786f37c8f3e2a1, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -2395,25 +2395,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ece9ae56e5a315244bfe7ff5719aa014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  willAtkPlayer: 1
   targets:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   theOrb: {fileID: 0}
   theUser: {fileID: 0}
-  PatrolRange: 7.27
+  PatrolRange: 11.91
   prefromingEatTimeLimit: 3
   mouthTransfrom: {fileID: 1172561238}
   FadeOutOrb: {fileID: 0}
   nowState: 0
   idleProb: 0.5
   updateStatePeriod: 5
-  chasingOrbSpeed: 1
+  chasingOrbSpeed: 0.5
   chasingPlayerSpeed: 1
   patrolSpeed: 0.1
   patrolSwitchTargetRange: 1.7
   startBiteDistance: 1.65
-  rotateSpeedFactor: 3
+  rotateSpeedFactor: 5
   orbContainer: {fileID: 0}
   currentPatrolTarget: 0
   innerTime: 0
