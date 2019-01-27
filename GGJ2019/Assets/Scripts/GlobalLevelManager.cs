@@ -81,7 +81,8 @@ public class GlobalLevelManager : MonoBehaviour
     void Start()
     {
         instance.nowLevel = 1;
-        Player.transform.position = isDead ? CheckPoint.position : RespawnPoint.position;
+        Player.transform.position = isDead ? RespawnPoint.position : RespawnPoint.position;
+        GlobalLevelManager.instance.isDead = false;
     }
 
     // Update is called once per frame
@@ -228,9 +229,9 @@ public class GlobalLevelManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(10f);
 
-        instance.RespawnPoint.position = instance.CheckPoint.position;
+        // instance.RespawnPoint.position = instance.CheckPoint.position;
         
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("MainScene");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
 
     }
 }
