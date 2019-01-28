@@ -39,7 +39,7 @@ public class DetectPlayerEnterZone : MonoBehaviour
 
             GlobalLevelManager.instance.InvokeEnterZone(index, this);
 
-            this.enabled = false;
+            this.gameObject.SetActive(false);
         }
     }
 
