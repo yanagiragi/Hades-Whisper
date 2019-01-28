@@ -2112,7 +2112,7 @@ PrefabInstance:
     - target: {fileID: 1290612419730125816, guid: 5bc4171e7411b5e4a88b43d7966fe936,
         type: 3}
       propertyPath: movementSettings.RunMultiplier
-      value: 2
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 1290612419730125816, guid: 5bc4171e7411b5e4a88b43d7966fe936,
         type: 3}
