@@ -106,7 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 1
   wallCollider: {fileID: 6186712507816828395}
-  globalLevelManager: {fileID: 0}
+  OrbDropPoint: {fileID: 0}
 --- !u!1 &6186712507816828395
 GameObject:
   m_ObjectHideFlags: 0

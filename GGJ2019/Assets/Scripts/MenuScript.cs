@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,9 +8,6 @@ public class MenuScript : MonoBehaviour
     void Start()
     {
         Cursor.visible = true;
-
-        if(GlobalLevelManager.instance != null)
-            GlobalLevelManager.instance.isDead = false;
     }
 
     public void NextScene()

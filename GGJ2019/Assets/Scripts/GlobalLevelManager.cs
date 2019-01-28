@@ -24,10 +24,6 @@ public class GlobalLevelManager : MonoBehaviour
 
     public GameObject Player;
 
-    public Transform RespawnPoint;
-
-    public Transform CheckPoint;
-
     public int nowLevel = 1;
 
     public static GlobalLevelManager instance = null;
@@ -42,8 +38,6 @@ public class GlobalLevelManager : MonoBehaviour
 
     public MonsterStageEnemy SpiderBehaviour;
 
-    public bool isDead;
-
     private void Awake()
     {
         //if we don't have an [_instance] set yet
@@ -52,9 +46,6 @@ public class GlobalLevelManager : MonoBehaviour
         //otherwise, if we do, kill this thing
         else
         {
-            instance.RespawnPoint = this.CheckPoint;
-            instance.CheckPoint = this.CheckPoint;
-            
             instance.levelOneAnimations = this.levelOneAnimations;
             instance.levelOneAnimators = this.levelOneAnimators;
             instance.levelOneEmmisiveGameObjects = this.levelOneEmmisiveGameObjects;
@@ -81,8 +72,6 @@ public class GlobalLevelManager : MonoBehaviour
     void Start()
     {
         instance.nowLevel = 1;
-        Player.transform.position = isDead ? RespawnPoint.position : RespawnPoint.position;
-        GlobalLevelManager.instance.isDead = false;
     }
 
     // Update is called once per frame
@@ -220,8 +209,6 @@ public class GlobalLevelManager : MonoBehaviour
 
         gameOverJumpScareAnimator.SetTrigger("jump");
 
-        isDead = true;
-
         StartCoroutine(Replay());
     }
 
@@ -229,8 +216,6 @@ public class GlobalLevelManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(10f);
 
-        // instance.RespawnPoint.position = instance.CheckPoint.position;
-        
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
 
     }
